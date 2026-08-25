@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eliminacion Lote Masivo - STING Next</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Bootstrap 5 CSS (para compatibilidad de estructura) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+    <!-- FontAwesome 4.7 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f5fa',
+                            100: '#dce8f3',
+                            500: '#2B4C6F',
+                            600: '#243f5d',
+                            700: '#1d334b',
+                            800: '#162638',
+                            900: '#0e1a26',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Aplicacion general de Plus Jakarta Sans */
+        .tailwind-app,
+        .tailwind-app * {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        }
+
+        /* Asegurar iconos de FontAwesome */
+        .tailwind-app .fa,
+        .tailwind-app [class^="fa-"],
+        .tailwind-app [class*=" fa-"] {
+            font-family: 'FontAwesome' !important;
+        }
+
+        /* Contenedor DataTables */
+        .dataTables_wrapper {
+            width: 100% !important;
+            clear: both;
+            position: relative;
+        }
+
+        .dataTables_wrapper:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* 1. Selector de cantidad y Buscador de la tabla */
+        .dataTables_wrapper .dataTables_length {
+            float: left;
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            float: right;
+            margin-bottom: 1.25rem;
+            font-size: 1.05rem;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input {
+            font-size: 1.05rem;
+            padding: 0.5rem 0.9rem;
+            border-radius: 0.5rem;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+        .dataTables_wrapper .dataTables_length select:focus,
+        .dataTables_wrapper .dataTables_filter input:focus {
+            border-color: #2B4C6F;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(43, 76, 111, 0.15);
+        }
+
+        /* 2. Informacion de registros y Paginador */
+        .dataTables_wrapper .dataTables_info {
+            float: left;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .dataTables_wrapper .dataTables_paginate {
+            float: right;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 3. Botones de paginacion */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.55rem 1.05rem;
+            margin: 0 0.25rem;
+            border-radius: 0.6rem;
+            border: 1px solid #cbd5e1 !important;
+            background: #ffffff !important;
+            color: #334155 !important;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #f1f5f9 !important;
+            color: #0f172a !important;
+            border-color: #94a3b8 !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: #2B4C6F !important;
+            color: #ffffff !important;
+            border-color: #2B4C6F !important;
+            font-weight: 700;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #f8fafc !important;
+            color: #94a3b8 !important;
+        }
+
+        /* 4. Cabeceras y Celdas de la Tabla */
+        #tablaLotesMasivo {
+            width: 100% !important;
+            margin: 0 auto;
+            clear: both;
+            border-collapse: collapse;
+        }
+
+        #tablaLotesMasivo th {
+            font-size: 0.95rem !important;
+            padding: 1.1rem 0.9rem !important;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        #tablaLotesMasivo td {
+            font-size: 1rem !important;
+            padding: 1rem 0.9rem !important;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        /* 5. Scrollbar personalizado para la tabla */
+        .dataTables_scroll {
+            width: 100% !important;
+            clear: both;
+            margin-bottom: 0.75rem;
+        }
+
+        .dataTables_scrollHead,
+        .dataTables_scrollBody {
+            width: 100% !important;
+        }
+
+        .dataTables_scrollBody {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 0.75rem;
+            border: 1px solid #f1f5f9;
+        }
+
+        .dataTables_scrollBody::-webkit-scrollbar {
+            height: 8px;
+        }
+        .dataTables_scrollBody::-webkit-scrollbar-track {
+            background: #f8fafc;
+            border-radius: 9999px;
+        }
+        .dataTables_scrollBody::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .dataTables_scrollBody::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {
+                float: none !important;
+                width: 100% !important;
+                text-align: left !important;
+                margin-bottom: 1rem !important;
+            }
+            .dataTables_wrapper .dataTables_info,
+            .dataTables_wrapper .dataTables_paginate {
+                float: none !important;
+                width: 100% !important;
+                text-align: center !important;
+                margin-top: 1rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                width: 100% !important;
+                margin-left: 0 !important;
+                margin-top: 0.35rem !important;
+            }
+        }
+
+        .input-invalid {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra Superior / Header Branding -->
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark border-bottom shadow-sm mb-3" style="background: linear-gradient(90deg, #0e1a26 0%, #162638 50%, #1d334b 100%); border-color: rgba(255,255,255,0.08) !important;">
+            <div class="container-fluid px-3 px-md-4">
+                <a class="navbar-brand d-flex align-items-center gap-2 text-white text-decoration-none" href="index.html" style="font-weight: 700; font-size: 1.25rem; letter-spacing: -0.02em;">
+                    <span style="display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; color: #38bdf8;">
+                        <i class="fa fa-bolt"></i>
+                    </span>
+                    <span>Sting <span style="color: #38bdf8; font-weight: 800;">Next</span></span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
+                    <ul class="navbar-nav ms-2">
+                        <li class="nav-item">
+                            <a class="nav-link text-white px-3 fw-semibold" href="index.html">Inicio</a>
+                        </li>
+                    </ul>
+                    <div class="d-none d-sm-flex align-items-center">
+                        <span class="badge" style="background-color: rgba(43, 76, 111, 0.5); color: #bae6fd; border: 1px solid rgba(56, 189, 248, 0.25); font-size: 0.75rem; padding: 0.4rem 0.8rem; border-radius: 20px;">
+                            Portal de Gestión (Demo GitHub Pages)
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main role="main" class="flex-1 container-fluid px-3 px-md-4 pb-4">
+        <div class="tailwind-app w-full my-4 space-y-6">
+            <!-- Header Principal -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-brand-700 text-white p-6 sm:p-7 rounded-2xl shadow-md border border-slate-700/40 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center border border-white/15 shadow-inner shrink-0 p-3.5">
+                        <i class="fa fa-trash-o text-2xl sm:text-3xl text-rose-400"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Eliminaci&oacute;n Lote Masivo</h1>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-brand-500/40 text-sky-200 border border-brand-500/50 tracking-wider">STING NEXT</span>
+                        </div>
+                        <p class="text-sm sm:text-base text-slate-300 mt-1">Gesti&oacute;n y depuraci&oacute;n por lotes con filtros avanzados</p>
+                    </div>
+                </div>
+                <div class="shrink-0">
+                    <a href="index.html" class="inline-flex items-center gap-2 px-5 py-2.5 text-base font-semibold text-slate-100 bg-white/10 hover:bg-white/20 border border-white/25 rounded-xl transition-all duration-200 backdrop-blur-sm shadow-sm active:scale-95 text-decoration-none">
+                        <i class="fa fa-arrow-left text-sm"></i> Volver al Inicio
+                    </a>
+                </div>
+            </div>
+
+            <!-- Panel de Filtros -->
+            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-7 space-y-5">
+                <div class="flex items-center gap-2.5 pb-3.5 border-b border-slate-100">
+                    <div class="w-8 h-8 rounded-lg bg-brand-50 text-brand-500 flex items-center justify-center text-sm">
+                        <i class="fa fa-filter"></i>
+                    </div>
+                    <h2 class="text-base font-bold uppercase tracking-wider text-brand-500">Filtros de B&uacute;squeda</h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-end">
+                    <!-- Nro Desde -->
+                    <div>
+                        <label for="txtNumeroDesde" class="block text-base font-semibold text-slate-700 mb-2">Nro de Lote Desde</label>
+                        <div class="relative">
+                            <input type="text" inputmode="numeric" id="txtNumeroDesde" class="solo-numeros w-full px-4 py-3 text-base bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition placeholder:text-slate-400 font-medium" placeholder="Ej: 70000" maxlength="10" autocomplete="off" />
+                        </div>
+                    </div>
+
+                    <!-- Nro Hasta -->
+                    <div>
+                        <label for="txtNumeroHasta" class="block text-base font-semibold text-slate-700 mb-2">Nro de Lote Hasta</label>
+                        <div class="relative">
+                            <input type="text" inputmode="numeric" id="txtNumeroHasta" class="solo-numeros w-full px-4 py-3 text-base bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition placeholder:text-slate-400 font-medium" placeholder="Ej: 75000" maxlength="10" autocomplete="off" />
+                        </div>
+                    </div>
+
+                    <!-- Rol -->
+                    <div>
+                        <label for="cboRol" class="block text-base font-semibold text-slate-700 mb-2">Rol</label>
+                        <select id="cboRol" class="w-full px-4 py-3 text-base bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition text-slate-700 font-medium">
+                            <option value="">Todos los Roles</option>
+                            <option value="1">Comprador</option>
+                            <option value="2">Vendedor</option>
+                            <option value="3">Corredor</option>
+                            <option value="4">Presentante</option>
+                        </select>
+                    </div>
+
+                    <!-- Acciones Filtro -->
+                    <div class="flex items-center gap-2.5">
+                        <button type="button" id="btnBuscarFiltros" class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 bg-brand-500 hover:bg-brand-600 text-white text-base font-semibold rounded-xl shadow-sm hover:shadow transition duration-150 active:scale-95">
+                            <i class="fa fa-search text-base"></i> Buscar
+                        </button>
+                        <button type="button" id="btnLimpiarFiltros" class="inline-flex items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-base font-semibold rounded-xl border border-slate-300 transition duration-150 active:scale-95" title="Limpiar Filtros">
+                            <i class="fa fa-eraser text-base"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar de Acciones -->
+            <div class="flex flex-wrap items-center justify-between gap-4 p-5 bg-slate-50/90 rounded-2xl border border-slate-200/90 shadow-sm backdrop-blur-sm">
+                <button type="button" id="btnEliminarSeleccionados" class="inline-flex items-center gap-2.5 px-6 py-3.5 text-base font-semibold text-white bg-rose-600 hover:bg-rose-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed rounded-xl shadow-sm transition-all duration-150 active:scale-95" disabled="disabled">
+                    <i class="fa fa-trash text-base"></i> Eliminar Lotes Seleccionados (<span id="countSelected">0</span>)
+                </button>
+
+                <div class="flex items-center gap-2 text-base text-slate-700 font-medium">
+                    <span>Seleccionados:</span>
+                    <span id="badgeCounter" class="px-3.5 py-1 bg-brand-50 text-brand-700 font-bold text-base rounded-full border border-brand-200">0</span>
+                </div>
+            </div>
+
+            <!-- Card de Tabla de Datos -->
+            <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-6 sm:p-7">
+                <table id="tablaLotesMasivo" class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50/90 border-b border-slate-200">
+                            <th class="text-center">Id</th>
+                            <th class="text-center">Nro</th>
+                            <th class="text-center">Cliente</th>
+                            <th class="text-center">Rol</th>
+                            <th class="text-center">Instrumento</th>
+                            <th class="text-center">Grano</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-center">Autom&aacute;tico</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center w-14">
+                                <input type="checkbox" id="chkSelectAllLotes" class="w-5 h-5 text-brand-500 rounded border-slate-300 focus:ring-brand-500/20 cursor-pointer align-middle" title="Seleccionar Todos" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-slate-700">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modales Tailwind Personalizados -->
+
+            <!-- 1. Modal Confirmación de Eliminación -->
+            <div id="modalConfirmarEliminacion" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition-all duration-200">
+                <div class="relative bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200/90 overflow-hidden transform transition-all duration-200 scale-95 opacity-0 modal-box">
+                    <!-- Header con icono -->
+                    <div class="p-6 pb-4 flex items-start gap-4">
+                        <div class="w-13 h-13 rounded-2xl bg-rose-50 border border-rose-200/80 flex items-center justify-center shrink-0 p-3">
+                            <i class="fa fa-trash-o text-2xl text-rose-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900">¿Eliminar Lotes Seleccionados?</h3>
+                            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
+                                ¿Confirma que desea eliminar <strong id="modalCantidadLotes" class="text-rose-600 font-bold">0</strong> lote(s) seleccionado(s)? Esta acción no se puede deshacer.
+                            </p>
+
+                            <!-- Lista de Números de Lotes Seleccionados -->
+                            <div class="mt-4 pt-3 border-t border-slate-100">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                                        <i class="fa fa-list-ol text-slate-400 me-1"></i> Números de Lote a eliminar:
+                                    </span>
+                                </div>
+                                <div id="modalListaNumerosLotes" class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-2.5 bg-slate-50/90 border border-slate-200 rounded-xl">
+                                    <!-- Chips renderizados dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer con acciones -->
+                    <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                        <button type="button" id="btnCancelarModalEliminar" class="px-5 py-2.5 text-base font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl transition duration-150 active:scale-95 shadow-sm">
+                            Cancelar
+                        </button>
+                        <button type="button" id="btnConfirmarModalEliminar" class="inline-flex items-center gap-2 px-5 py-2.5 text-base font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-md hover:shadow-lg transition duration-150 active:scale-95">
+                            <i class="fa fa-trash text-sm"></i> Sí, Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Modal Notificación / Alerta General (Éxito / Advertencia) -->
+            <div id="modalNotificacion" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition-all duration-200">
+                <div class="relative bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200/90 overflow-hidden transform transition-all duration-200 scale-95 opacity-0 modal-box">
+                    <div class="p-6 text-center space-y-4">
+                        <div id="notifIconContainer" class="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center">
+                            <i id="notifIcon" class="fa fa-check text-3xl text-emerald-600"></i>
+                        </div>
+                        <div class="space-y-1.5">
+                            <h3 id="notifTitulo" class="text-xl font-bold text-slate-900">Operación Exitosa</h3>
+                            <p id="notifMensaje" class="text-sm text-slate-600 leading-relaxed">Los lotes fueron procesados correctamente.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 px-6 py-3.5 border-t border-slate-100 flex items-center justify-center">
+                        <button type="button" id="btnCerrarNotificacion" class="w-full sm:w-auto px-6 py-2.5 text-base font-semibold text-white bg-brand-500 hover:bg-brand-600 rounded-xl shadow transition duration-150 active:scale-95">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-top footer text-muted py-3 bg-white">
+        <div class="container-fluid px-3 px-md-4 text-center text-sm text-slate-500">
+            &copy; 2026 - STING Next - Versión Estática GitHub Pages
+        </div>
+    </footer>
+
+    <!-- Scripts CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        // Mock data representativo para visualización y prueba completa del frontend
+        var mockLotesData = [
+            { Id: 1, Nro: "72621", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "-", Cantidad: "30", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 2, Nro: "72617", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "-", Cantidad: "3", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 3, Nro: "72616", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "-", Cantidad: "30", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 4, Nro: "72615", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "CERTIFICADO DE DEPÓSITO", Grano: "-", Cantidad: "19", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 5, Nro: "72614", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "CERTIFICADO DE DEPÓSITO", Grano: "-", Cantidad: "14", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 6, Nro: "72610", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "-", Cantidad: "30", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 7, Nro: "72609", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "-", Cantidad: "30", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 8, Nro: "72625", Cliente: "30500010912 - CARGILL S.A.C.I.", Rol: "Comprador", RolId: "1", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "Soja", Cantidad: "45", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 9, Nro: "72628", Cliente: "30500054321 - BUNGE ARGENTINA S.A.", Rol: "Comprador", RolId: "1", TipoInstrumento: "CERTIFICADO DE DEPÓSITO", Grano: "Maíz", Cantidad: "60", esAutomatico: false, EstadoActual: "Abierto" },
+            { Id: 10, Nro: "72632", Cliente: "30523456789 - COFCO INT. ARGENTINA", Rol: "Vendedor", RolId: "2", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "Trigo", Cantidad: "25", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 11, Nro: "72635", Cliente: "30708912345 - AGRO URANGA S.A.", Rol: "Vendedor", RolId: "2", TipoInstrumento: "CONTRATO DE COMPRAVENTA", Grano: "Girasol", Cantidad: "15", esAutomatico: false, EstadoActual: "Cerrado" },
+            { Id: 12, Nro: "72640", Cliente: "30612345678 - CORREDORA DEL SUR S.A.", Rol: "Corredor", RolId: "3", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "Soja", Cantidad: "50", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 13, Nro: "72644", Cliente: "30500087654 - DREYFUS COMMODITIES", Rol: "Comprador", RolId: "1", TipoInstrumento: "CERTIFICADO DE DEPÓSITO", Grano: "Cebada", Cantidad: "35", esAutomatico: false, EstadoActual: "Pendiente" },
+            { Id: 14, Nro: "72648", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "-", Cantidad: "28", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 15, Nro: "72652", Cliente: "30545678901 - DOW AGROSCIENCES S.A.", Rol: "Vendedor", RolId: "2", TipoInstrumento: "FIJACIÓN DE PRECIO", Grano: "Sorgo", Cantidad: "12", esAutomatico: false, EstadoActual: "Abierto" },
+            { Id: 16, Nro: "72655", Cliente: "30698765432 - CEREALERA CENTRAL S.R.L.", Rol: "Corredor", RolId: "3", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "Maíz", Cantidad: "40", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 17, Nro: "72660", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "CERTIFICADO DE DEPÓSITO", Grano: "-", Cantidad: "22", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 18, Nro: "72664", Cliente: "30500010912 - CARGILL S.A.C.I.", Rol: "Comprador", RolId: "1", TipoInstrumento: "CONTRATO DE COMPRAVENTA", Grano: "Trigo", Cantidad: "55", esAutomatico: false, EstadoActual: "Cerrado" },
+            { Id: 19, Nro: "72668", Cliente: "30500054321 - BUNGE ARGENTINA S.A.", Rol: "Comprador", RolId: "1", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "Soja", Cantidad: "30", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 20, Nro: "72672", Cliente: "30523456789 - COFCO INT. ARGENTINA", Rol: "Vendedor", RolId: "2", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "-", Cantidad: "18", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 21, Nro: "72676", Cliente: "30708912345 - AGRO URANGA S.A.", Rol: "Vendedor", RolId: "2", TipoInstrumento: "CERTIFICADO DE DEPÓSITO", Grano: "Girasol", Cantidad: "8", esAutomatico: false, EstadoActual: "Abierto" },
+            { Id: 22, Nro: "72680", Cliente: "30612345678 - CORREDORA DEL SUR S.A.", Rol: "Corredor", RolId: "3", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "Maíz", Cantidad: "65", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 23, Nro: "72685", Cliente: "30500120882 - ACA", Rol: "Presentante", RolId: "4", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "-", Cantidad: "30", esAutomatico: true, EstadoActual: "Liquidado" },
+            { Id: 24, Nro: "72690", Cliente: "30500087654 - DREYFUS COMMODITIES", Rol: "Comprador", RolId: "1", TipoInstrumento: "FIJACIÓN DE PRECIO", Grano: "Soja", Cantidad: "50", esAutomatico: false, EstadoActual: "Liquidado" },
+            { Id: 25, Nro: "72695", Cliente: "30545678901 - DOW AGROSCIENCES S.A.", Rol: "Vendedor", RolId: "2", TipoInstrumento: "LPG CONSIGNACIÓN", Grano: "Trigo", Cantidad: "20", esAutomatico: true, EstadoActual: "Cerrado" }
+        ];
+
+        var selectedLotesSet = new Set();
+
+        /* --- CONTROL DE MODALES CON ANIMACIÓN --- */
+        function abrirModal($modal) {
+            $modal.removeClass("hidden").addClass("flex");
+            setTimeout(function () {
+                $modal.find(".modal-box").removeClass("scale-95 opacity-0").addClass("scale-100 opacity-100");
+            }, 10);
+        }
+
+        function cerrarModal($modal) {
+            $modal.find(".modal-box").removeClass("scale-100 opacity-100").addClass("scale-95 opacity-0");
+            setTimeout(function () {
+                $modal.removeClass("flex").addClass("hidden");
+            }, 180);
+        }
+
+        function mostrarNotificacion(titulo, mensaje, tipo) {
+            $("#notifTitulo").text(titulo);
+            $("#notifMensaje").text(mensaje);
+
+            var $iconContainer = $("#notifIconContainer");
+            var $icon = $("#notifIcon");
+
+            if (tipo === "error") {
+                $iconContainer.attr("class", "w-16 h-16 mx-auto rounded-2xl bg-rose-50 border border-rose-200/80 flex items-center justify-center");
+                $icon.attr("class", "fa fa-exclamation-triangle text-3xl text-rose-600");
+            } else if (tipo === "warning") {
+                $iconContainer.attr("class", "w-16 h-16 mx-auto rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-center");
+                $icon.attr("class", "fa fa-exclamation-circle text-3xl text-amber-600");
+            } else {
+                $iconContainer.attr("class", "w-16 h-16 mx-auto rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center");
+                $icon.attr("class", "fa fa-check text-3xl text-emerald-600");
+            }
+
+            abrirModal($("#modalNotificacion"));
+        }
+
+        function actualizarContador() {
+            var totalChecked = selectedLotesSet.size;
+            $("#countSelected").text(totalChecked);
+            $("#badgeCounter").text(totalChecked);
+            $("#btnEliminarSeleccionados").html('<i class="fa fa-trash text-base"></i> Eliminar Lotes Seleccionados (' + totalChecked + ')');
+
+            if (totalChecked > 0) {
+                $("#btnEliminarSeleccionados").prop("disabled", false);
+            } else {
+                $("#btnEliminarSeleccionados").prop("disabled", true);
+            }
+        }
+
+        $(document).ready(function () {
+            // Filtro personalizado de DataTables para rango Desde-Hasta y Rol
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    var numDesde = parseInt($("#txtNumeroDesde").val(), 10);
+                    var numHasta = parseInt($("#txtNumeroHasta").val(), 10);
+                    var rolId = $("#cboRol").val();
+
+                    var item = mockLotesData[dataIndex];
+                    if (!item) return true;
+
+                    var nroInt = parseInt(item.Nro, 10);
+
+                    if (!isNaN(numDesde) && nroInt < numDesde) {
+                        return false;
+                    }
+                    if (!isNaN(numHasta) && nroInt > numHasta) {
+                        return false;
+                    }
+                    if (rolId && item.RolId !== rolId) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            );
+
+            var tabla = $("#tablaLotesMasivo").DataTable({
+                "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+                "data": mockLotesData,
+                "ordering": false,
+                "processing": false,
+                "autoWidth": false,
+                "scrollX": true,
+                "scrollCollapse": true,
+                "language": {
+                    "sProcessing": "Cargando datos...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados para los filtros seleccionados",
+                    "sEmptyTable": "Ningun dato disponible en la tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Ultimo",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    }
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Nro" },
+                    { "data": "Cliente" },
+                    { "data": "Rol" },
+                    { "data": "TipoInstrumento", "name": "Instrumento" },
+                    { "data": "Grano" },
+                    { "data": "Cantidad" },
+                    { "data": "esAutomatico" },
+                    { "data": "EstadoActual" },
+                    { "data": "Id" }
+                ],
+                "columnDefs": [
+                    { className: "hidden", "targets": [0] },
+                    {
+                        "targets": [1],
+                        "className": "text-center",
+                        "render": function (data) {
+                            return "<strong class='font-bold text-slate-800'>" + (data || "-") + "</strong>";
+                        }
+                    },
+                    {
+                        "targets": [2, 3, 4, 5, 6],
+                        "className": "text-center text-slate-700 font-medium"
+                    },
+                    {
+                        "targets": [7],
+                        "className": "text-center",
+                        "orderable": false,
+                        "render": function (data) {
+                            if (data === true) {
+                                return "<span class='inline-flex items-center text-emerald-600' title='Automatico'><i class='fa fa-check-circle text-xl'></i></span>";
+                            } else {
+                                return "<span class='inline-flex items-center text-slate-400' title='Manual'><i class='fa fa-minus-circle text-lg'></i></span>";
+                            }
+                        }
+                    },
+                    {
+                        "targets": [8],
+                        "className": "text-center",
+                        "render": function (data) {
+                            var estado = data || "-";
+                            var cls = "bg-slate-100 text-slate-700 border border-slate-200";
+                            var estLower = estado.toLowerCase();
+                            if (estLower.indexOf("liquidado") !== -1) {
+                                cls = "bg-emerald-50 text-emerald-700 border border-emerald-200";
+                            } else if (estLower.indexOf("cerrado") !== -1) {
+                                cls = "bg-slate-100 text-slate-700 border border-slate-300";
+                            } else if (estLower.indexOf("abierto") !== -1) {
+                                cls = "bg-sky-50 text-sky-700 border border-sky-200";
+                            } else if (estLower.indexOf("pendiente") !== -1) {
+                                cls = "bg-amber-50 text-amber-700 border border-amber-200";
+                            }
+                            return "<span class='inline-flex items-center px-3.5 py-1 rounded-full text-sm font-semibold " + cls + "'>" + estado + "</span>";
+                        }
+                    },
+                    {
+                        "targets": [9],
+                        "className": "text-center",
+                        "orderable": false,
+                        "render": function (data, type, full) {
+                            var idStr = String(full.Id);
+                            var isChecked = selectedLotesSet.has(idStr) ? "checked='checked'" : "";
+                            return '<input type="checkbox" class="w-5 h-5 text-brand-500 rounded border-slate-300 focus:ring-brand-500/20 cursor-pointer chk-lote-item align-middle" value="' + full.Id + '" data-nro="' + (full.Nro || '') + '" ' + isChecked + ' />';
+                        }
+                    }
+                ],
+                "drawCallback": function () {
+                    var totalEnPagina = $(".chk-lote-item").length;
+                    var totalCheckedEnPagina = 0;
+
+                    $(".chk-lote-item").each(function () {
+                        var idStr = String($(this).val());
+                        if (selectedLotesSet.has(idStr)) {
+                            $(this).prop("checked", true);
+                            $(this).closest("tr").addClass("bg-brand-50/60 font-medium");
+                            totalCheckedEnPagina++;
+                        } else {
+                            $(this).prop("checked", false);
+                            $(this).closest("tr").removeClass("bg-brand-50/60 font-medium");
+                        }
+                    });
+
+                    $("#chkSelectAllLotes").prop("checked", totalEnPagina > 0 && totalEnPagina === totalCheckedEnPagina);
+                    actualizarContador();
+                }
+            });
+
+            // Ajuste automatico de columnas en resize
+            $(window).on('resize', function () {
+                tabla.columns.adjust();
+            });
+
+            // Validacion de rango Desde - Hasta
+            function validarRangoNumeros() {
+                var elHasta = document.getElementById("txtNumeroHasta");
+                var valDesde = parseInt($("#txtNumeroDesde").val(), 10);
+                var valHasta = parseInt($("#txtNumeroHasta").val(), 10);
+
+                if (!isNaN(valDesde) && !isNaN(valHasta) && valDesde > valHasta) {
+                    elHasta.setCustomValidity("El numero 'Hasta' debe ser mayor o igual al numero 'Desde'.");
+                    elHasta.reportValidity();
+                    $("#txtNumeroHasta").addClass("input-invalid");
+                    return false;
+                } else {
+                    elHasta.setCustomValidity("");
+                    $("#txtNumeroHasta").removeClass("input-invalid");
+                    return true;
+                }
+            }
+
+            // Boton Buscar Filtros
+            $("#btnBuscarFiltros").on("click", function () {
+                if (!validarRangoNumeros()) {
+                    return false;
+                }
+                tabla.draw();
+            });
+
+            // Boton Limpiar Filtros
+            $("#btnLimpiarFiltros").on("click", function () {
+                $("#txtNumeroDesde").val("");
+                $("#txtNumeroHasta").val("");
+                var elHasta = document.getElementById("txtNumeroHasta");
+                if (elHasta) {
+                    elHasta.setCustomValidity("");
+                }
+                $("#txtNumeroHasta").removeClass("input-invalid");
+                $("#cboRol").val("");
+                selectedLotesSet.clear();
+                actualizarContador();
+                tabla.draw();
+            });
+
+            // Sanitizar inputs numericos
+            $(".solo-numeros").on("input paste keyup", function () {
+                var $el = $(this);
+                setTimeout(function () {
+                    var val = $el.val();
+                    var cleanVal = val.replace(/\D/g, '');
+                    if (val !== cleanVal) {
+                        $el.val(cleanVal);
+                    }
+                    validarRangoNumeros();
+                }, 0);
+            });
+
+            // Enter en inputs de filtro
+            $("#txtNumeroDesde, #txtNumeroHasta").on("keypress", function (e) {
+                if (e.which === 13) {
+                    if (!validarRangoNumeros()) {
+                        return false;
+                    }
+                    tabla.draw();
+                }
+            });
+
+            // Cambio en combo Rol
+            $("#cboRol").on("change", function () {
+                if (!validarRangoNumeros()) {
+                    return false;
+                }
+                tabla.draw();
+            });
+
+            // Seleccionar / Deseleccionar todos en la pagina actual
+            $("#chkSelectAllLotes").on("change", function () {
+                var isChecked = $(this).is(":checked");
+                $(".chk-lote-item").each(function () {
+                    var idStr = String($(this).val());
+                    $(this).prop("checked", isChecked);
+                    if (isChecked) {
+                        selectedLotesSet.add(idStr);
+                        $(this).closest("tr").addClass("bg-brand-50/60 font-medium");
+                    } else {
+                        selectedLotesSet.delete(idStr);
+                        $(this).closest("tr").removeClass("bg-brand-50/60 font-medium");
+                    }
+                });
+                actualizarContador();
+            });
+
+            // Seleccionar / Deseleccionar item individual
+            $(document).on("change", ".chk-lote-item", function () {
+                var idStr = String($(this).val());
+                if ($(this).is(":checked")) {
+                    selectedLotesSet.add(idStr);
+                    $(this).closest("tr").addClass("bg-brand-50/60 font-medium");
+                } else {
+                    selectedLotesSet.delete(idStr);
+                    $(this).closest("tr").removeClass("bg-brand-50/60 font-medium");
+                }
+
+                var totalEnPagina = $(".chk-lote-item").length;
+                var totalCheckedEnPagina = $(".chk-lote-item:checked").length;
+                $("#chkSelectAllLotes").prop("checked", totalEnPagina > 0 && totalEnPagina === totalCheckedEnPagina);
+
+                actualizarContador();
+            });
+
+            /* --- ACCIÓN: ABRIR MODAL DE CONFIRMACIÓN AL ELIMINAR --- */
+            $("#btnEliminarSeleccionados").on("click", function () {
+                if (selectedLotesSet.size === 0) return;
+
+                var cantidad = selectedLotesSet.size;
+                $("#modalCantidadLotes").text(cantidad);
+
+                // Construir chips / lista visual con los números de lote seleccionados
+                var chipsHtml = "";
+                mockLotesData.forEach(function (item) {
+                    if (selectedLotesSet.has(String(item.Id))) {
+                        chipsHtml += '<span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-rose-700 border border-rose-200 shadow-sm">' +
+                                     '<i class="fa fa-tag text-[10px] text-rose-500"></i>' +
+                                     '<span>Lote <strong>#' + (item.Nro || item.Id) + '</strong></span>' +
+                                     '<span class="text-slate-400 font-normal text-[11px]">(' + (item.Cliente || '') + ')</span>' +
+                                     '</span>';
+                    }
+                });
+
+                $("#modalListaNumerosLotes").html(chipsHtml);
+                abrirModal($("#modalConfirmarEliminacion"));
+            });
+
+            // Botón Cancelar modal
+            $("#btnCancelarModalEliminar").on("click", function () {
+                cerrarModal($("#modalConfirmarEliminacion"));
+            });
+
+            // Cerrar al hacer clic en el backdrop
+            $("#modalConfirmarEliminacion, #modalNotificacion").on("click", function (e) {
+                if (e.target === this) {
+                    cerrarModal($(this));
+                }
+            });
+
+            // Botón Aceptar en modal de notificación
+            $("#btnCerrarNotificacion").on("click", function () {
+                cerrarModal($("#modalNotificacion"));
+            });
+
+            // Botón Confirmar Eliminación dentro del modal
+            $("#btnConfirmarModalEliminar").on("click", function () {
+                var cantidad = selectedLotesSet.size;
+                cerrarModal($("#modalConfirmarEliminacion"));
+
+                var $btn = $("#btnEliminarSeleccionados");
+                $btn.prop("disabled", true).html('<i class="fa fa-spinner fa-spin text-base"></i> Eliminando...');
+
+                setTimeout(function () {
+                    // Remover elementos eliminados del mock data
+                    mockLotesData = mockLotesData.filter(function (item) {
+                        return !selectedLotesSet.has(String(item.Id));
+                    });
+
+                    selectedLotesSet.clear();
+                    actualizarContador();
+
+                    tabla.clear();
+                    tabla.rows.add(mockLotesData);
+                    tabla.draw();
+
+                    // Mostrar modal estilizado en lugar de alert()
+                    mostrarNotificacion("¡Eliminación Exitosa!", "Se eliminaron " + cantidad + " lote(s) correctamente del sistema.", "success");
+                }, 600);
+            });
+        });
+    </script>
+</body>
+</html>
