@@ -1,0 +1,827 @@
+@page
+@model WebApplication1.Pages.BackendModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análisis Técnico Completo — Backend</title>
+  <style>
+    @@page {
+      size: A4;
+      margin: 16mm 18mm 22mm 18mm;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      color: #1a1a2e;
+      background: #fff;
+    }
+
+    /* ── FLOATING BACK BUTTON ── */
+    .btn-back-floating {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(30, 27, 75, 0.85);
+      color: #c7d2fe;
+      border: 1px solid rgba(129, 140, 248, 0.4);
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 9.5pt;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+    }
+    .btn-back-floating:hover {
+      background: rgba(49, 46, 129, 0.95);
+      color: #fff;
+      border-color: #818cf8;
+      transform: translateY(-1px);
+    }
+    @@media print {
+      .btn-back-floating { display: none; }
+    }
+
+    /* ── COVER ── */
+    .cover {
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 60px 40px;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      color: #fff;
+    }
+    .cover-tag {
+      font-size: 9pt;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #a78bfa;
+      margin-bottom: 20px;
+    }
+    .cover-title {
+      font-size: 34pt;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .cover-title span { color: #818cf8; }
+    .cover-subtitle {
+      font-size: 14pt;
+      color: #c7d2fe;
+      margin-bottom: 40px;
+    }
+    .cover-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 9.5pt;
+      color: #a5b4fc;
+    }
+    .cover-meta strong { color: #e0e7ff; }
+    .cover-line {
+      width: 60px;
+      height: 4px;
+      background: #818cf8;
+      border-radius: 2px;
+      margin: 30px 0;
+    }
+    .cover-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 30px;
+    }
+    .pill {
+      background: rgba(129,140,248,0.2);
+      border: 1px solid rgba(129,140,248,0.4);
+      color: #c7d2fe;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 8.5pt;
+      font-weight: 600;
+    }
+
+    /* ── CONTENT ── */
+    .section { margin: 0 0 32px 0; page-break-inside: avoid; }
+
+    h1 {
+      font-size: 22pt;
+      font-weight: 800;
+      color: #1e1b4b;
+      border-bottom: 3px solid #6366f1;
+      padding-bottom: 8px;
+      margin: 36px 0 18px 0;
+    }
+    h1 .num {
+      display: inline-block;
+      background: #6366f1;
+      color: #fff;
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 12pt;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    h2 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #312e81;
+      margin: 22px 0 10px 0;
+      padding-left: 10px;
+      border-left: 4px solid #818cf8;
+    }
+
+    h3 {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #4338ca;
+      margin: 16px 0 8px 0;
+    }
+
+    p { margin-bottom: 10px; }
+
+    /* ── TABLES ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 9.5pt;
+      page-break-inside: avoid;
+    }
+    thead th {
+      background: #312e81;
+      color: #e0e7ff;
+      text-align: left;
+      padding: 7px 11px;
+      font-weight: 700;
+      font-size: 9pt;
+    }
+    tbody tr:nth-child(odd)  { background: #f5f3ff; }
+    tbody tr:nth-child(even) { background: #fff; }
+    td, th { padding: 6px 11px; border-bottom: 1px solid #e0e7ff; vertical-align: top; }
+    tbody tr:hover { background: #ede9fe; }
+
+    /* ── CODE ── */
+    pre, code {
+      font-family: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+      font-size: 8.5pt;
+    }
+    pre {
+      background: #1e1b4b;
+      color: #e0e7ff;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 12px 0;
+      overflow: hidden;
+      white-space: pre-wrap;
+      word-break: break-all;
+      page-break-inside: avoid;
+    }
+    code {
+      background: #f0eeff;
+      color: #4338ca;
+      border-radius: 3px;
+      padding: 1px 5px;
+    }
+    pre code { background: none; color: inherit; padding: 0; }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 8pt;
+      font-weight: 700;
+      margin: 1px 2px;
+    }
+    .badge-red    { background: #fee2e2; color: #991b1b; }
+    .badge-orange { background: #ffedd5; color: #9a3412; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .badge-green  { background: #dcfce7; color: #166534; }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 14px 0;
+      page-break-inside: avoid;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .callout-icon { font-size: 15pt; flex-shrink: 0; }
+    .callout-critical { background: #fef2f2; border-left: 5px solid #ef4444; }
+    .callout-high     { background: #fff7ed; border-left: 5px solid #f97316; }
+    .callout-medium   { background: #fffbeb; border-left: 5px solid #eab308; }
+    .callout-info     { background: #eff6ff; border-left: 5px solid #3b82f6; }
+    .callout-success  { background: #f0fdf4; border-left: 5px solid #22c55e; }
+    .callout h4 { font-size: 10pt; font-weight: 700; margin-bottom: 4px; }
+
+    /* ── DIAGRAM ── */
+    .arch-diagram {
+      background: #1e1b4b;
+      color: #e0e7ff;
+      border-radius: 10px;
+      padding: 24px 32px;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      font-size: 9.5pt;
+      line-height: 1.8;
+      margin: 16px 0;
+    }
+    .arch-diagram .layer {
+      border: 1px solid rgba(129,140,248,0.4);
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin: 6px 0;
+      background: rgba(99,102,241,0.12);
+    }
+    .arch-diagram .layer-name { color: #a5b4fc; font-weight: 700; }
+    .arch-diagram .layer-detail { color: #c7d2fe; font-size: 8.5pt; }
+    .arch-diagram .arrow { color: #818cf8; text-align: center; font-size: 13pt; }
+
+    /* ── SUMMARY BOX ── */
+    .summary-box {
+      background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+      border: 2px solid #818cf8;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .summary-box h3 { color: #3730a3; margin-top: 0; }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      position: fixed;
+      bottom: 7mm;
+      left: 18mm;
+      right: 18mm;
+      font-size: 7.5pt;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 4px;
+    }
+
+    /* ── SECTION BREAK ── */
+    .page-break { page-break-before: always; }
+
+    /* ── LIST ── */
+    ul, ol { padding-left: 20px; margin: 8px 0; }
+    li { margin-bottom: 4px; }
+    ul li::marker { color: #6366f1; }
+
+    /* ── PRINT / PAGINATION ── */
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body {
+      padding-bottom: 18mm;
+      overflow-wrap: anywhere;
+    }
+    h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+    table, pre, .callout, .summary-box, .arch-diagram {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    tr { break-inside: avoid; page-break-inside: avoid; }
+    thead { display: table-header-group; }
+    .page-footer { z-index: 10; }
+
+    /* ── REFINED CONTENT ── */
+    .section { margin-bottom: 28px; }
+
+    h1 {
+      letter-spacing: -0.35px;
+      line-height: 1.18;
+    }
+    h1 .num {
+      min-width: 38px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(99,102,241,0.18);
+    }
+
+    h2 {
+      line-height: 1.25;
+      letter-spacing: -0.1px;
+    }
+
+    h3 {
+      line-height: 1.3;
+    }
+
+    p {
+      max-width: 100%;
+    }
+
+    table {
+      border: 1px solid #e0e7ff;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    thead th {
+      letter-spacing: 0.1px;
+      vertical-align: middle;
+    }
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+    td:first-child {
+      font-weight: 500;
+    }
+
+    pre {
+      border: 1px solid rgba(129,140,248,0.22);
+      box-shadow: 0 4px 14px rgba(30,27,75,0.08);
+      line-height: 1.48;
+    }
+
+    code {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .callout {
+      box-shadow: 0 2px 8px rgba(30,27,75,0.04);
+    }
+
+    .summary-box {
+      box-shadow: 0 3px 12px rgba(99,102,241,0.08);
+    }
+
+    ol, ul {
+      margin-top: 10px;
+      margin-bottom: 14px;
+    }
+    ol {
+      counter-reset: polished-list;
+      list-style: none;
+      padding-left: 0;
+    }
+    ol li {
+      counter-increment: polished-list;
+      position: relative;
+      padding-left: 30px;
+      margin-bottom: 8px;
+    }
+    ol li::before {
+      content: counter(polished-list);
+      position: absolute;
+      left: 0;
+      top: 1px;
+      width: 21px;
+      height: 21px;
+      line-height: 21px;
+      text-align: center;
+      border-radius: 50%;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 8.5pt;
+      font-weight: 800;
+    }
+
+    ul li {
+      margin-bottom: 7px;
+    }
+
+    ul li::marker {
+      color: #6366f1;
+    }
+
+    .page-footer {
+      background: #fff;
+    }
+
+    @@media print {
+      .cover {
+        min-height: calc(297mm - 38mm);
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating Back Button -->
+<a asp-page="/Index" class="btn-back-floating">
+  ← Volver a la aplicación
+</a>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- COVER PAGE -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-tag">Análisis técnico</div>
+  <div class="cover-title">Estructura <span>Backend</span></div>
+  <div class="cover-subtitle">.NET 10 · Clean Architecture · SQL Server</div>
+  <div class="cover-line"></div>
+  <div class="cover-meta">
+    <div><strong>Fecha de análisis:</strong> 25 de agosto de 2026</div>
+    <div><strong>Solución:</strong> Solución backend (4 proyectos)</div>
+  </div>
+  <div class="cover-stack">
+    <span class="pill">.NET 10</span>
+    <span class="pill">C# 12</span>
+    <span class="pill">Clean Architecture</span>
+    <span class="pill">EF Core 10</span>
+    <span class="pill">MediatR 12</span>
+    <span class="pill">CQRS</span>
+    <span class="pill">FluentValidation 11</span>
+    <span class="pill">Mapster 7</span>
+    <span class="pill">SQL Server</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- 1. ARQUITECTURA -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<h1><span class="num">1</span> Arquitectura</h1>
+
+<div class="callout callout-success">
+  <div class="callout-icon">✅</div>
+  <div><h4>Veredicto</h4>Sí sigue Clean Architecture en estructura y en flujo de dependencias. Las capas internas (Domain, Application) no conocen las capas externas. Las dependencias fluyen hacia adentro.</div>
+</div>
+
+<h2>Capas y proyectos</h2>
+<table>
+  <thead><tr><th>Proyecto</th><th>Rol</th><th>Responsabilidad</th></tr></thead>
+  <tbody>
+    <tr><td><code>Domain</code></td><td>Núcleo</td><td>Entidades de negocio puras (POCO). Sin dependencias externas.</td></tr>
+    <tr><td><code>Application</code></td><td>Casos de uso</td><td>CQRS / MediatR, interfaces de contratos, DTOs, validadores, pipeline behaviors, mappings.</td></tr>
+    <tr><td><code>Infrastructure</code></td><td>Persistencia</td><td>EF Core + SQL Server, repositorios genéricos, Unit of Work, configuraciones Fluent API.</td></tr>
+    <tr><td><code>API</code></td><td>Entry point</td><td>Controllers HTTP, middleware global, configuración de DI y pipeline.</td></tr>
+  </tbody>
+</table>
+
+<h2>Diagrama de arquitectura real</h2>
+<div class="arch-diagram">
+  <div class="layer">
+    <div class="layer-name">🌐 API</div>
+    <div class="layer-detail">QueryController · ExceptionMiddleware · Program.cs · Startup.cs</div>
+  </div>
+  <div class="arrow">↓ &nbsp; IMediator.Send()</div>
+  <div class="layer">
+    <div class="layer-name">⚙️ Application</div>
+    <div class="layer-detail">MediatR Pipeline → UnhandledExceptionBehaviour → ValidationBehaviour → Handler<br>
+    IUnitOfWork · IReadRepository&lt;T&gt; · IWriteRepository&lt;T&gt; · Mapster Profile · DTOs · FluentValidation</div>
+  </div>
+  <div class="arrow">↓ &nbsp; ref Domain</div>
+  <div class="layer">
+    <div class="layer-name">🏛️ Domain</div>
+    <div class="layer-detail">Entidad de dominio — Sin dependencias externas (POCO puro)</div>
+  </div>
+  <div class="arrow">↑ &nbsp; ref Domain + Application (contratos)</div>
+  <div class="layer">
+    <div class="layer-name">🗄️ Infrastructure</div>
+    <div class="layer-detail">Context (EF Core) · ReadRepository&lt;T&gt; · WriteRepository&lt;T&gt; · UnitOfWork · SQL Server</div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- 2. .NET Y TECNOLOGÍAS -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<h1 class="page-break"><span class="num">2</span> .NET y Tecnologías</h1>
+
+<h2>Versiones</h2>
+<table>
+  <thead><tr><th>Tecnología</th><th>Versión</th><th>Notas</th></tr></thead>
+  <tbody>
+    <tr><td>.NET</td><td>10.0</td><td>Todos los proyectos</td></tr>
+    <tr><td>C#</td><td>12 (default net10.0)</td><td>Implícito por el SDK</td></tr>
+    <tr><td>Nullable reference types</td><td>Habilitado</td><td>Todos los proyectos</td></tr>
+    <tr><td>ImplicitUsings</td><td>Habilitado</td><td>Todos los proyectos</td></tr>
+  </tbody>
+</table>
+
+<h2>NuGet — Application</h2>
+<table>
+  <thead><tr><th>Paquete</th><th>Versión</th><th>Propósito</th></tr></thead>
+  <tbody>
+    <tr><td>MediatR</td><td>12.4.1</td><td>CQRS / Mediator pattern</td></tr>
+    <tr><td>FluentValidation</td><td>11.11.0</td><td>Validación de commands/queries</td></tr>
+    <tr><td>FluentValidation.DependencyInjectionExtensions</td><td>11.11.0</td><td>Registro automático de validadores</td></tr>
+    <tr><td>Mapster</td><td>7.4.0</td><td>Object mapping (≠ AutoMapper)</td></tr>
+    <tr><td>Mapster.DependencyInjection</td><td>1.0.1</td><td>Registro de Mapster en DI</td></tr>
+    <tr><td>Microsoft.AspNetCore.Http.Abstractions</td><td>2.3.0</td><td>HttpContext para extensiones de paginación</td></tr>
+    <tr><td>Microsoft.Extensions.Logging.Abstractions</td><td>8.0.2</td><td>ILogger&lt;T&gt; en behaviors</td></tr>
+  </tbody>
+</table>
+
+<h2>NuGet — Infrastructure</h2>
+<table>
+  <thead><tr><th>Paquete</th><th>Versión</th><th>Propósito</th></tr></thead>
+  <tbody>
+    <tr><td>Microsoft.EntityFrameworkCore.SqlServer</td><td>8.0.12</td><td>ORM + proveedor SQL Server</td></tr>
+    <tr><td>Microsoft.EntityFrameworkCore.Tools</td><td>8.0.12</td><td>herramientas de Entity Framework</td></tr>
+    <tr><td>Microsoft.Extensions.Options.ConfigurationExtensions</td><td>8.0.0</td><td>Options pattern / IConfiguration</td></tr>
+  </tbody>
+</table>
+
+<h2>NuGet — API</h2>
+<table>
+  <thead><tr><th>Paquete</th><th>Versión</th><th>Propósito</th></tr></thead>
+  <tbody>
+    <tr><td>Newtonsoft.Json</td><td>13.0.3</td><td>Serialización JSON en ExceptionMiddleware</td></tr>
+  </tbody>
+</table>
+
+<h2>Otras tecnologías</h2>
+<table>
+  <thead><tr><th>Tecnología</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr><td>ORM</td><td>Entity Framework Core 10</td></tr>
+    <tr><td>Base de datos</td><td>Microsoft SQL Server</td></tr>
+    <tr><td>Autenticación</td><td><code>UseAuthentication()</code> llamado — <strong>sin esquema configurado</strong> (no-op efectivo)</td></tr>
+    <tr><td>Swagger / OpenAPI</td><td><code>AddEndpointsApiExplorer()</code> llamado — <strong>sin Swagger configurado</strong></td></tr>
+    <tr><td>Logging</td><td>Microsoft.Extensions.Logging (built-in) — nivel <code>Information</code></td></tr>
+    <tr><td>Validaciones</td><td>FluentValidation 11 con MediatR pipeline behavior</td></tr>
+    <tr><td>Manejo de errores</td><td>ExceptionMiddleware custom + 3 excepciones tipadas</td></tr>
+    <tr><td>DI</td><td>Microsoft.Extensions.DependencyInjection (built-in)</td></tr>
+    <tr><td>CORS</td><td>Política global permisiva (AllowAnyOrigin)</td></tr>
+    <tr><td>Serialización</td><td>System.Text.Json (default) + Newtonsoft.Json (middleware)</td></tr>
+    <tr><td>Host model</td><td>Classic ASP.NET Core pattern (CreateHostBuilder + Startup.cs)</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- 3. ESTRUCTURA DEL CÓDIGO -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<h1 class="page-break"><span class="num">3</span> Estructura del Código</h1>
+
+<h2>Árbol completo verificado</h2>
+<pre>Backend.sln
+├── API/
+│   ├── Program.cs                        ← entry point, classic host model
+│   ├── Startup.cs                        ← DI + pipeline configuration
+│   ├── appsettings.json                  ← ⚠️ credenciales SQL en texto plano
+│   ├── appsettings.Development.json      ← override mínimo de logging
+│   ├── Properties/launchSettings.json    ← perfiles http/https/IIS
+│   ├── Controllers/Queries/
+│   │   └── QueryController   ← único controller
+│   ├── Errors/
+│   │   ├── CodeErrorResponse.cs
+│   │   └── CodeErrorException.cs
+│   └── Middleware/
+│       └── ExceptionMiddleware.cs
+│
+├── Application/
+│   ├── ApplicationServiceRegistration.cs
+│   ├── Contracts/Persistence/
+│   │   ├── IReadRepository&lt;T&gt;.cs
+│   │   ├── IWriteRepository&lt;T&gt;.cs
+│   │   └── IUnitOfWork.cs
+│   ├── DTOs/
+│   │   ├── PaginacionReadModel.cs
+│   │   └── DTOs/           ← ⚠️ typo en carpeta
+│   │       └── ResponseModel.cs
+│   ├── Errors/
+│   │   ├── Exceptions/
+│   │   │   ├── BadRequestException.cs
+│   │   │   ├── NotFoundException.cs
+│   │   │   └── ValidationException.cs
+│   │   └── Behaviours/
+│   │       ├── UnhandledExceptionBehaviour.cs
+│   │       └── ValidationBehaviour.cs
+│   ├── Extensions/
+│   │   └── PaginacionDb&lt;T&gt;.cs
+│   ├── Features/
+│   │   └── ParametroComercialTXT/Queries/
+│   │       └── GetListQueryHandler.cs
+│   ├── Mappings/
+│   │   └── MappingProfile.cs               ← Mapster IRegister (≠ AutoMapper)
+│   └── Utilities/
+│       └── HttpContextExtensions.cs
+│
+├── Domain/
+│   └── Models/
+│       └── Entidad de dominio.cs  ← única entidad (54 propiedades)
+│
+└── Infrastructure/
+    ├── InfraestructureServiceRegistration.cs
+    ├── Configurations/
+    │   └── EntityConfigurations.cs
+    ├── Persistence/
+    │   └── Context.cs
+    └── Repositories/
+        ├── ReadRepository&lt;T&gt;.cs
+        ├── WriteRepository&lt;T&gt;.cs
+        └── UnitOfWork.cs</pre>
+
+<h2>Endpoints</h2>
+<table>
+  <thead><tr><th>Controller</th><th>Método</th><th>URL completa</th><th>Auth</th></tr></thead>
+  <tbody>
+    <tr><td>QueryController</td><td>GET</td><td><code>api/query</code></td><td>API Key</td></tr>
+  </tbody>
+</table>
+
+<h2>Repositorios</h2>
+<table>
+  <thead><tr><th>Clase</th><th>Interfaz</th><th>Métodos</th></tr></thead>
+  <tbody>
+    <tr><td>ReadRepository&lt;T&gt;</td><td>IReadRepository&lt;T&gt;</td><td>GetAllAsync(predicate), GetAllAsync(paginacion, predicate, orderBy, includes, tracking), GetByAsync(predicate)</td></tr>
+    <tr><td>WriteRepository&lt;T&gt;</td><td>IWriteRepository&lt;T&gt;</td><td>AddEntity, UpdateEntity, DeleteEntity</td></tr>
+    <tr><td>UnitOfWork</td><td>IUnitOfWork</td><td>ReadRepository&lt;T&gt;(), WriteRepository&lt;T&gt;(), Complete(), Dispose()</td></tr>
+  </tbody>
+</table>
+
+<h2>Pipeline MediatR</h2>
+<table>
+  <thead><tr><th>Orden</th><th>Behavior</th><th>Acción</th></tr></thead>
+  <tbody>
+    <tr><td>1°</td><td>UnhandledExceptionBehaviour&lt;TRequest, TResponse&gt;</td><td>Captura excepciones no manejadas y las loguea vía ILogger</td></tr>
+    <tr><td>2°</td><td>ValidationBehaviour&lt;TRequest, TResponse&gt;</td><td>Ejecuta todos los IValidator&lt;TRequest&gt; en paralelo; lanza ValidationException si hay fallos</td></tr>
+    <tr><td>3°</td><td>Handler concreto</td><td>Lógica del caso de uso</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- 4. BASE DE DATOS -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<h1><span class="num">4</span> Base de Datos</h1>
+
+<h2>Motor y acceso</h2>
+<table>
+  <thead><tr><th>Aspecto</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr><td>Motor</td><td>Microsoft SQL Server</td></tr>
+    <tr><td>ORM</td><td>Entity Framework Core 10</td></tr>
+    <tr><td>DbContext</td><td>Context</td></tr>
+  </tbody>
+</table>
+<div><strong>No se observa una carpeta de migraciones.</strong> El esquema de base de datos es preexistente (sistema legacy). EF Core se usa solo para lectura/escritura sobre tablas ya existentes.</div>
+</div>
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- 5. CALIDAD DEL CÓDIGO -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<h1 class="page-break"><span class="num">5</span> Calidad del Código</h1>
+
+<h2>Principios SOLID</h2>
+<table>
+  <thead><tr><th>Principio</th><th>Estado</th><th>Observación</th></tr></thead>
+  <tbody>
+    <tr><td>SRP — Responsabilidad única</td><td>✅ Respetado</td><td>Cada clase tiene una responsabilidad clara y delimitada</td></tr>
+    <tr><td>OCP — Abierto/Cerrado</td><td>✅ Respetado</td><td>Repositorios genéricos extensibles sin modificación</td></tr>
+    <tr><td>LSP — Sustitución Liskov</td><td>✅ Respetado</td><td>Implementaciones cumplen sus contratos de interfaz</td></tr>
+    <tr><td>ISP — Segregación de interfaces</td><td>✅ Respetado</td><td>IReadRepository y IWriteRepository separados correctamente</td></tr>
+    <tr><td>DIP — Inversión de dependencias</td><td>✅ Respetado</td><td>Handlers dependen de IUnitOfWork (abstracción), no de clases concretas</td></tr>
+  </tbody>
+</table>
+
+<h2>Otros aspectos de calidad</h2>
+<table>
+  <thead><tr><th>Aspecto</th><th>Estado</th><th>Detalle</th></tr></thead>
+  <tbody>
+    <tr><td>Async/Await</td><td>✅ Correcto</td><td>Usado en repositorios (ToListAsync, FirstOrDefaultAsync, SaveChangesAsync) y handlers</td></tr>
+    <tr><td>Nullable reference types</td><td>✅ Habilitado</td><td>Entidad y DTOs usan string? / int? correctamente</td></tr>
+    <tr><td>Naming de clases/interfaces</td><td>✅ Correcto</td><td>Consistente con convenciones C# en arquitectura</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- 6. CONFIGURACIÓN Y DEPLOYMENT -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<h1><span class="num">6</span> Configuración y Deployment</h1>
+
+<table>
+  <thead><tr><th>Aspecto</th><th>Estado</th><th>Detalle</th></tr></thead>
+  <tbody>
+
+    <tr><td>Perfiles de inicio</td><td>✅</td><td>http (5100), https (7226 + 5100), IIS Express (26393)</td></tr>  </tbody>
+</table>
+
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- 7. RESUMEN FINAL -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<h1 class="page-break"><span class="num">7</span> Resumen Final</h1>
+
+<!-- A) Stack -->
+<h2>A) Stack Tecnológico Completo</h2>
+<table>
+  <thead><tr><th>Categoría</th><th>Tecnología</th><th>Versión</th></tr></thead>
+  <tbody>
+    <tr><td>Runtime</td><td>.NET</td><td>10.0</td></tr>
+    <tr><td>Lenguaje</td><td>C#</td><td>12</td></tr>
+    <tr><td>Framework Web</td><td>ASP.NET Core</td><td>10.0</td></tr>
+    <tr><td>ORM</td><td>Entity Framework Core (SQL Server)</td><td>8.0.12</td></tr>
+    <tr><td>Base de datos</td><td>Microsoft SQL Server</td></tr>
+    <tr><td>Mensajería / CQRS</td><td>MediatR</td><td>12.4.1</td></tr>
+    <tr><td>Validación</td><td>FluentValidation</td><td>11.11.0</td></tr>
+    <tr><td>Mapping</td><td>Mapster</td><td>7.4.0</td></tr>
+    <tr><td>DI</td><td>Microsoft.Extensions.DependencyInjection</td><td>built-in</td></tr>
+    <tr><td>Logging</td><td>Microsoft.Extensions.Logging</td><td>built-in</td></tr>
+    <tr><td>JSON</td><td>System.Text.Json + Newtonsoft.Json</td><td>13.0.3</td></tr>
+    <tr><td>Auth</td><td>No configurada</td><td>—</td></tr>
+    <tr><td>Tests</td><td>No existe</td><td>—</td></tr>
+    <tr><td>CI/CD</td><td>No existe</td><td>—</td></tr>
+    <tr><td>Contenedores</td><td>No existe</td><td>—</td></tr>
+    <tr><td>Documentación API</td><td>No configurada</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<!-- B) Diagrama -->
+<h2>B) Diagrama de Arquitectura</h2>
+<div class="arch-diagram">
+  <div class="layer">
+    <div class="layer-name">🌐 API</div>
+    <div class="layer-detail">QueryController · ExceptionMiddleware · Program.cs · Startup.cs</div>
+  </div>
+  <div class="arrow">↓ IMediator.Send()</div>
+  <div class="layer">
+    <div class="layer-name">⚙️ Application</div>
+    <div class="layer-detail">
+      Pipeline: UnhandledExceptionBehaviour → ValidationBehaviour → Handler<br>
+      Contratos: IUnitOfWork · IReadRepository&lt;T&gt; · IWriteRepository&lt;T&gt;<br>
+      DTOs · Mapster Profile · FluentValidation · Custom Exceptions
+    </div>
+  </div>
+  <div class="arrow">↓ ref Domain</div>
+  <div class="layer">
+    <div class="layer-name">🏛️ Domain</div>
+    <div class="layer-detail">Entidad de dominio — POCO puro, sin dependencias externas</div>
+  </div>
+  <div class="arrow">↑ ref Domain + Application (contratos)</div>
+  <div class="layer">
+    <div class="layer-name">🗄️ Infrastructure</div>
+    <div class="layer-detail">Context (EF Core) · ReadRepository&lt;T&gt; · WriteRepository&lt;T&gt; · UnitOfWork · SQL Server</div>
+  </div>
+</div>
+
+<!-- C) Puntos fuertes -->
+<h2>C) Puntos Fuertes</h2>
+<ol>
+  <li><strong>Arquitectura bien estructurada:</strong> Las dependencias fluyen en la dirección correcta. Las capas internas no conocen las externas.</li>
+  <li><strong>Repositorios genéricos reutilizables:</strong> ReadRepository&lt;T&gt; y WriteRepository&lt;T&gt; funcionan para cualquier entidad sin código adicional.</li>
+  <li><strong>Pipeline MediatR profesional:</strong> La cadena UnhandledExceptionBehaviour → ValidationBehaviour → Handler es extensible y limpia.</li>
+  <li><strong>Separación Read/Write en repositorios:</strong> Implementación correcta de ISP y compatible con CQRS.</li>
+  <li><strong>Manejo de errores tipado:</strong> Tres excepciones semánticas + middleware global — approach profesional y centralizado.</li>
+  <li><strong>Nullable reference types habilitado:</strong> Código moderno y consciente de null-safety.</li>
+  <li><strong>Domain libre de dependencias:</strong> Domain no tiene ninguna referencia NuGet — portable y testeable.</li>
+  <li><strong>Mapster sobre AutoMapper:</strong> Elección técnica válida y de mayor rendimiento en la mayoría de escenarios.</li>
+</ol>
+
+<!-- D) Problemas -->
+<h2 class="page-break">D) Recomendaciones Concretas</h2>
+
+<h3>Urgente — Antes de cualquier deploy a producción</h3>
+<ol>
+  <li><strong>Corregir ExceptionMiddleware:</strong> Agregar <code>context.Response.StatusCode = statusCode;</code> antes de <code>WriteAsync(result)</code>. Condicionar stack trace con <code>_env.IsDevelopment()</code>.</li>
+  <li><strong>Mover credenciales a secretos:</strong> Usar <code>dotnet user-secrets</code> en desarrollo, variables de entorno en producción, o Azure Key Vault. Rotar la contraseña SQL actual.</li>
+  <li><strong>Implementar autenticación:</strong> Definir esquema JWT Bearer. Agregar <code>services.AddAuthentication().AddJwtBearer(...)</code> y proteger endpoints con <code>[Authorize]</code>.</li>
+  <li><strong>Habilitar cifrado SQL Server:</strong> Cambiar a <code>Encrypt=True;TrustServerCertificate=True</code> como mínimo.</li>
+</ol>
+
+<h3>Alta prioridad</h3>
+<ol start="5">
+  <li><strong>Agregar Swagger:</strong> Instalar Swashbuckle.AspNetCore, configurar <code>AddSwaggerGen()</code> y <code>UseSwagger()/UseSwaggerUI()</code>.</li>
+  <li><strong>Implementar tests unitarios:</strong> Al menos para handlers, repositorios y behaviors. Usar xUnit + Moq o NSubstitute.</li>
+  <li><strong>Corregir bug de paginación nula</strong> en <code>ReadRepository&lt;T&gt;.GetAllAsync</code>.</li>
+  <li><strong>Hacer la paginación funcional end-to-end:</strong> Aceptar parámetros desde query string en el controller, pasarlos al Query y aplicarlos en el handler.</li>
+</ol>
+
+<h3>Mejoras de calidad</h3>
+<ol start="9">
+  <li>Implementar al menos un validador FluentValidation concreto para demostrar el pipeline.</li>
+  <li>Mover <code>HttpContextExtensions</code> a la capa API.</li>
+  <li>Corregir orden CORS: <code>app.UseCors()</code> antes de <code>app.UseRouting()</code>.</li>
+  <li>Reemplazar <code>Hashtable</code> con <code>Dictionary&lt;string, object&gt;</code> en UnitOfWork.</li>
+  <li>Propagar <code>CancellationToken</code> a todos los métodos async de repositorios.</li>
+  <li>Agregar <code>Dockerfile</code> y <code>.dockerignore</code>.</li>
+  <li>Considerar migrar al minimal ho model (sin Startup.cs) para alinearse con .NET 6+.</li>
+</ol>
+
+<!-- F) Descripción portfolio -->
+<h2>E) Descripción Profesional</h2>
+<div class="summary-box">
+  <p>
+    <strong>Backend RESTful</strong> desarrollado en <strong>.NET 10</strong> con <strong>C# 12</strong>, siguiendo los principios de <strong>Clean Architecture</strong> distribuidos en cuatro capas bien delimitadas: Domain, Application, Infrastructure y API. Implementa el patrón <strong>CQRS</strong> mediante <strong>MediatR</strong>, con un pipeline de behaviors que centraliza el manejo de excepciones y la validación de requests a través de <strong>FluentValidation</strong>. La persistencia de datos se gestiona con <strong>Entity Framework Core</strong> sobre <strong>SQL Server</strong>, utilizando repositorios genéricos separados para lectura y escritura (<code>IReadRepository&lt;T&gt;</code> / <code>IWriteRepository&lt;T&gt;</code>) orquestados por un <strong>Unit of Work</strong>. El mapeo entre entidades y DTOs se realiza con <strong>Mapster</strong>. El manejo de errores está centralizado en un middleware global que transforma excepciones tipadas en respuestas HTTP estructuradas. La solución presenta una base arquitectónica preparada para evolucionar y escalar como backend de una aplicación empresarial.
+  </p>
+</div>
+
+<div class="page-footer">
+  <span>Análisis Técnico — Backend</span>
+  <span>Generado: 25 de agosto de 2026</span>
+</div>
+
+</body>
+</html>
