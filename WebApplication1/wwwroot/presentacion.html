@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,480 +35,510 @@
   <style>
     body {
       font-family: 'Plus Jakarta Sans', Segoe UI, sans-serif;
-      background-color: #f8fafc;
-      color: #0f172a;
-    }
-    .slide-card {
-      min-height: 580px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
     .step-badge {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       background: #eff6ff;
       color: #2563eb;
       border: 2px solid #93c5fd;
-      margin: 0 auto 12px auto;
+      margin: 0 auto 14px auto;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col bg-slate-900 text-slate-100">
+<body class="h-full w-full overflow-hidden flex flex-col bg-slate-950 text-slate-100">
 
   <!-- Top Navigation Bar -->
-  <header class="bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-50 px-4 py-3 sm:px-6">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <a href="/" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-sm font-semibold border border-white/15 transition active:scale-95 text-decoration-none">
-          <i class="fa fa-arrow-left text-xs"></i> Volver a la aplicación
-        </a>
-        <span class="text-xs text-slate-400 hidden sm:inline-block">|</span>
-        <span class="text-xs text-sky-300 font-semibold tracking-wider uppercase hidden sm:inline-block">Presentación Institucional</span>
-      </div>
+  <header class="h-14 bg-slate-950/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 sm:px-8 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-3">
+      <a href="/" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-sm font-semibold border border-white/15 transition active:scale-95 text-decoration-none">
+        <i class="fa fa-arrow-left text-xs"></i> Volver a la aplicación
+      </a>
+      <span class="text-xs text-slate-500 hidden sm:inline-block">|</span>
+      <span class="text-xs text-sky-300 font-semibold tracking-wider uppercase hidden sm:inline-block">Presentación Institucional</span>
+    </div>
 
-      <div class="flex items-center gap-3">
-        <!-- Slide Selector Controls -->
-        <button id="btnPrev" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 disabled:opacity-30 disabled:cursor-not-allowed transition">
-          <i class="fa fa-chevron-left"></i> Anterior
-        </button>
-        <span id="slideIndicator" class="text-xs font-bold text-sky-200 bg-slate-800/90 px-3 py-1.5 rounded-lg border border-slate-700">
-          1 / 10
-        </span>
-        <button id="btnNext" class="px-3 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold border border-brand-400/40 disabled:opacity-30 disabled:cursor-not-allowed transition">
-          Siguiente <i class="fa fa-chevron-right"></i>
-        </button>
-      </div>
+    <div class="flex items-center gap-3">
+      <button id="btnPrev" class="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 disabled:opacity-30 disabled:cursor-not-allowed transition">
+        <i class="fa fa-chevron-left"></i> Anterior
+      </button>
+      <span id="slideIndicator" class="text-xs font-bold text-sky-200 bg-slate-800 px-3.5 py-1.5 rounded-lg border border-slate-700">
+        1 / 10
+      </span>
+      <button id="btnNext" class="px-3.5 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold border border-brand-400/40 disabled:opacity-30 disabled:cursor-not-allowed transition">
+        Siguiente <i class="fa fa-chevron-right"></i>
+      </button>
+      <button id="btnFullscreen" class="hidden sm:inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white border border-white/15 text-xs transition" title="Pantalla Completa">
+        <i class="fa fa-arrows-alt"></i>
+      </button>
     </div>
   </header>
 
-  <!-- Slide Stage -->
-  <main class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-10">
-    <div class="w-full max-w-5xl">
+  <!-- Fullscreen Slide Stage -->
+  <main class="flex-1 w-full h-[calc(100vh-3.5rem)] overflow-y-auto overflow-x-hidden p-0 relative flex flex-col">
 
-      <!-- SLIDE 1: PORTADA -->
-      <div class="slide-item active bg-gradient-to-br from-slate-900 via-brand-900 to-slate-950 text-white rounded-3xl p-8 sm:p-14 shadow-2xl border border-slate-700/60 slide-card text-center items-center justify-center space-y-8" data-index="1">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs sm:text-sm font-bold uppercase tracking-widest shadow-inner">
+    <!-- SLIDE 1: PORTADA -->
+    <div class="slide-item active w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-gradient-to-br from-[#070b14] via-[#0e1a2d] to-[#09111e] text-white p-6 sm:p-12 lg:p-16 flex flex-col justify-between items-center text-center" data-index="1">
+      <div class="pt-4">
+        <div class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-400/30 text-xs sm:text-sm font-bold uppercase tracking-widest shadow-inner">
           <i class="fa fa-cubes text-sm"></i> Marco Metodol&oacute;gico & Tecnol&oacute;gico
         </div>
-        <div class="space-y-4 max-w-3xl">
-          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            MODELO DE <br class="hidden sm:inline">
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-300 to-sky-200">TRABAJO</span>
-          </h1>
-          <p class="text-base sm:text-xl text-slate-300 font-medium">
-            Scrum &nbsp;·&nbsp; ISO 9001 &nbsp;·&nbsp; Desarrollo con asistencia de Inteligencia Artificial y Agentes
-          </p>
-        </div>
-        <div class="pt-6 border-t border-slate-700/60 w-full flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm text-slate-400">
-          <span>Dicsys · Equipo de Desarrollo</span>
-          <span class="mt-2 sm:mt-0 font-medium text-slate-300">STING Next Architecture</span>
-        </div>
       </div>
 
-      <!-- SLIDE 2: AGENDA -->
-      <div class="slide-item hidden bg-white text-slate-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200 slide-card" data-index="2">
-        <div class="border-b border-slate-100 pb-5">
+      <div class="space-y-6 max-w-4xl py-8">
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight">
+          MODELO DE <br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-300 to-sky-200">TRABAJO</span>
+        </h1>
+        <p class="text-lg sm:text-2xl text-slate-300 font-medium max-w-2xl mx-auto leading-relaxed">
+          Scrum &nbsp;·&nbsp; ISO 9001 &nbsp;·&nbsp; Desarrollo con asistencia de Inteligencia Artificial y Agentes
+        </p>
+      </div>
+
+      <div class="pb-4 border-t border-slate-800/80 w-full max-w-5xl flex flex-col sm:flex-row items-center justify-between text-sm text-slate-400">
+        <span>Dicsys · Equipo de Desarrollo</span>
+        <span class="mt-2 sm:mt-0 font-medium text-slate-300">STING Next Architecture</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: AGENDA -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-slate-50 text-slate-900 p-6 sm:p-10 lg:p-14 flex flex-col justify-between" data-index="2">
+      <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+        <div class="border-b border-slate-200/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-2.5 h-8 bg-brand-500 rounded-full"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Agenda del Encuentro</h2>
+            <div class="w-3 h-9 bg-brand-500 rounded-full"></div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Agenda del Encuentro</h2>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 py-6">
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/40 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-3 text-lg font-bold">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-6 my-auto">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-brand-500/50 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-users"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">01. Metodolog&iacute;a Scrum</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Sprints, Daily Stand-ups, asignación de roles y ceremonias clave del equipo.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">01. Metodolog&iacute;a Scrum</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Sprints, Daily Stand-ups, asignación de roles y ceremonias clave del equipo.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/40 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-brand-500/50 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-certificate"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">02. Calidad ISO 9001</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Procesos estandarizados, control de calidad, reglas y gobernanza de ambientes.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">02. Calidad ISO 9001</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Procesos estandarizados, control de calidad, reglas y gobernanza de ambientes.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/40 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-brand-500/50 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-code-fork"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">03. Flujo y Homologaci&oacute;n</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Ciclo PRs, pruebas en TEST, paso a UAT, homologación y Release posterior.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">03. Flujo y Homologaci&oacute;n</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Ciclo PRs, pruebas en TEST, paso a UAT, homologación y Release posterior.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/40 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-brand-500/50 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-book"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">04. Directivas STING Next</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Normas obligatorias y reglas del contrato API para desarrolladores y Agentes IA.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">04. Directivas STING Next</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Normas obligatorias y reglas del contrato API para desarrolladores y Agentes IA.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/40 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-brand-500/50 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-magic"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">05. IA y Agentes</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Automatización de historias de usuario, documentación de pantallas y tests.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">05. IA y Agentes</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Automatización de historias de usuario, documentación de pantallas y tests.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-brand-500/40 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-brand-500/50 hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-line-chart"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">06. Beneficios e Impacto</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Optimizaciones palpables en tiempos de entrega, cobertura y calidad del software.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">06. Beneficios e Impacto</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Optimizaciones palpables en tiempos de entrega, cobertura y calidad del software.</p>
           </div>
         </div>
-        <div class="text-xs text-slate-400 border-t border-slate-100 pt-3 text-right font-medium">Agenda General</div>
-      </div>
 
-      <!-- SLIDE 3: METODOLOGÍA SCRUM -->
-      <div class="slide-item hidden bg-white text-slate-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200 slide-card" data-index="3">
-        <div class="border-b border-slate-100 pb-5">
+        <div class="text-xs text-slate-400 border-t border-slate-200/80 pt-3 text-right font-semibold">Agenda General</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: METODOLOGÍA SCRUM -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-slate-50 text-slate-900 p-6 sm:p-10 lg:p-14 flex flex-col justify-between" data-index="3">
+      <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+        <div class="border-b border-slate-200/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-2.5 h-8 bg-brand-500 rounded-full"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Metodolog&iacute;a Scrum</h2>
+            <div class="w-3 h-9 bg-brand-500 rounded-full"></div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Metodolog&iacute;a Scrum</h2>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 py-6">
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6 my-auto">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-3 text-lg">
+              <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4 text-xl">
                 <i class="fa fa-comments"></i>
               </div>
-              <h3 class="font-bold text-slate-900 text-base mb-2">Daily Stand-up</h3>
-              <p class="text-xs text-slate-600 leading-relaxed">Seguimiento diario de avances, detección temprana de impedimentos y sincronización. Registro histórico formal en planillas.</p>
+              <h3 class="font-bold text-slate-900 text-lg mb-2">Daily Stand-up</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Seguimiento diario de avances, detección temprana de impedimentos y sincronización. Registro histórico formal en planillas.</p>
             </div>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3 text-lg">
+              <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 text-xl">
                 <i class="fa fa-tasks"></i>
               </div>
-              <h3 class="font-bold text-slate-900 text-base mb-2">Sprints & Planning</h3>
-              <p class="text-xs text-slate-600 leading-relaxed">Asignación clara de tickets por desarrollador, estimación precisa en horas/PH, refinamiento periódico y priorización.</p>
+              <h3 class="font-bold text-slate-900 text-lg mb-2">Sprints & Planning</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Asignación clara de tickets por desarrollador, estimación precisa en horas/PH, refinamiento periódico y priorización.</p>
             </div>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-3 text-lg">
+              <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4 text-xl">
                 <i class="fa fa-id-badge"></i>
               </div>
-              <h3 class="font-bold text-slate-900 text-base mb-2">Roles Claros</h3>
-              <p class="text-xs text-slate-600 leading-relaxed">Definición de roles: Desarrolladores, QA/Testing, Analista Funcional y Responsable de Proyecto con control de capacidad.</p>
+              <h3 class="font-bold text-slate-900 text-lg mb-2">Roles Claros</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Definición de roles: Desarrolladores, QA/Testing, Analista Funcional y Responsable de Proyecto con control de capacidad.</p>
             </div>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between">
             <div>
-              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3 text-lg">
+              <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 text-xl">
                 <i class="fa fa-sitemap"></i>
               </div>
-              <h3 class="font-bold text-slate-900 text-base mb-2">Gantt & Control</h3>
-              <p class="text-xs text-slate-600 leading-relaxed">Seguimiento con Diagrama de Gantt, gestión formal de ambientes y actualización rigurosa de tickets (En curso, Completado, En espera).</p>
+              <h3 class="font-bold text-slate-900 text-lg mb-2">Gantt & Control</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Seguimiento con Diagrama de Gantt, gestión formal de ambientes y actualización rigurosa de tickets (En curso, Completado, En espera).</p>
             </div>
           </div>
         </div>
-        <div class="text-xs text-slate-400 border-t border-slate-100 pt-3 text-right font-medium">Marco Scrum Aplicado</div>
-      </div>
 
-      <!-- SLIDE 4: CALIDAD ISO 9001 -->
-      <div class="slide-item hidden bg-white text-slate-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200 slide-card" data-index="4">
-        <div class="border-b border-slate-100 pb-5">
+        <div class="text-xs text-slate-400 border-t border-slate-200/80 pt-3 text-right font-semibold">Marco Scrum Aplicado</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: CALIDAD ISO 9001 -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-slate-50 text-slate-900 p-6 sm:p-10 lg:p-14 flex flex-col justify-between" data-index="4">
+      <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+        <div class="border-b border-slate-200/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-2.5 h-8 bg-brand-500 rounded-full"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Calidad bajo ISO 9001</h2>
+            <div class="w-3 h-9 bg-brand-500 rounded-full"></div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Calidad bajo ISO 9001</h2>
           </div>
         </div>
-        <div class="space-y-4 py-6">
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start gap-4">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-base">
+
+        <div class="space-y-4 py-6 my-auto">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 text-lg">
               <i class="fa fa-shield"></i>
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-sm sm:text-base">Procesos Estandarizados</h3>
-              <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Garantizan la trazabilidad total de requerimientos, la calidad continua del entregable y la mejora constante del proceso.</p>
+              <h3 class="font-bold text-slate-900 text-base sm:text-lg">Procesos Estandarizados</h3>
+              <p class="text-sm text-slate-600 mt-1">Garantizan la trazabilidad total de requerimientos, la calidad continua del entregable y la mejora constante del proceso.</p>
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start gap-4">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 text-base">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 text-lg">
               <i class="fa fa-server"></i>
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-sm sm:text-base">Gobernanza y Control de Ambientes</h3>
-              <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Hoja de control de ambientes TEST/UAT. Separación estricta de ramas Feature (F) y Release (R) por ticket con limpieza post-homologación.</p>
+              <h3 class="font-bold text-slate-900 text-base sm:text-lg">Gobernanza y Control de Ambientes</h3>
+              <p class="text-sm text-slate-600 mt-1">Hoja de control de ambientes TEST/UAT. Separación estricta de ramas Feature (F) y Release (R) por ticket con limpieza post-homologación.</p>
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start gap-4">
-            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0 text-base">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0 text-lg">
               <i class="fa fa-search"></i>
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-sm sm:text-base">Revisiones Exhaustivas de C&oacute;digo</h3>
-              <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Revisiones previas requeridas para paso a TEST y UAT. Prohibición estricta de cambios directos de código en ambientes de producción.</p>
+              <h3 class="font-bold text-slate-900 text-base sm:text-lg">Revisiones Exhaustivas de C&oacute;digo</h3>
+              <p class="text-sm text-slate-600 mt-1">Revisiones previas requeridas para paso a TEST y UAT. Prohibición estricta de cambios directos de código en ambientes de producción.</p>
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-start gap-4">
-            <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 text-base">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 text-lg">
               <i class="fa fa-calendar-times-o"></i>
             </div>
             <div>
-              <h3 class="font-bold text-slate-900 text-sm sm:text-base">Pol&iacute;ticas de Despliegue Seguro</h3>
-              <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Regla institucional: Evitar salidas a producción los días viernes, salvo casos excepcionales de urgencia crítica aprobada.</p>
+              <h3 class="font-bold text-slate-900 text-base sm:text-lg">Pol&iacute;ticas de Despliegue Seguro</h3>
+              <p class="text-sm text-slate-600 mt-1">Regla institucional: Evitar salidas a producción los días viernes, salvo casos excepcionales de urgencia crítica aprobada.</p>
             </div>
           </div>
         </div>
-        <div class="text-xs text-slate-400 border-t border-slate-100 pt-3 text-right font-medium">Normativa & Control</div>
-      </div>
 
-      <!-- SLIDE 5: FLUJO DE DESARROLLO Y HOMOLOGACIÓN -->
-      <div class="slide-item hidden bg-white text-slate-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200 slide-card" data-index="5">
-        <div class="border-b border-slate-100 pb-5">
+        <div class="text-xs text-slate-400 border-t border-slate-200/80 pt-3 text-right font-semibold">Normativa & Control</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: FLUJO DE DESARROLLO Y HOMOLOGACIÓN -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-slate-50 text-slate-900 p-6 sm:p-10 lg:p-14 flex flex-col justify-between" data-index="5">
+      <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+        <div class="border-b border-slate-200/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-2.5 h-8 bg-brand-500 rounded-full"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Flujo de Desarrollo y Homologaci&oacute;n</h2>
+            <div class="w-3 h-9 bg-brand-500 rounded-full"></div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Flujo de Desarrollo y Homologaci&oacute;n</h2>
           </div>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 py-8 text-center">
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5 py-8 my-auto text-center">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
             <div>
               <div class="step-badge">1</div>
-              <h4 class="font-bold text-xs sm:text-sm text-slate-900 mb-1">Creaci&oacute;n de Rama Feature</h4>
-              <p class="text-[11px] text-slate-600 leading-tight">Desarrollo aislado en rama F según ticket asignado.</p>
+              <h4 class="font-bold text-sm sm:text-base text-slate-900 mb-1.5">Creaci&oacute;n de Rama Feature</h4>
+              <p class="text-xs text-slate-600 leading-normal">Desarrollo aislado en rama F según ticket asignado.</p>
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
             <div>
               <div class="step-badge">2</div>
-              <h4 class="font-bold text-xs sm:text-sm text-slate-900 mb-1">PR a Release</h4>
-              <p class="text-[11px] text-slate-600 leading-tight">Crear Pull Request y etiquetar a todos los DEVs.</p>
+              <h4 class="font-bold text-sm sm:text-base text-slate-900 mb-1.5">PR a Release</h4>
+              <p class="text-xs text-slate-600 leading-normal">Crear Pull Request y etiquetar a todos los DEVs.</p>
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
             <div>
               <div class="step-badge">3</div>
-              <h4 class="font-bold text-xs sm:text-sm text-slate-900 mb-1">Aprobaci&oacute;n</h4>
-              <p class="text-[11px] text-slate-600 leading-tight">Revisión y aprobación requerida por el equipo DEV.</p>
+              <h4 class="font-bold text-sm sm:text-base text-slate-900 mb-1.5">Aprobaci&oacute;n</h4>
+              <p class="text-xs text-slate-600 leading-normal">Revisión y aprobación requerida por el equipo DEV.</p>
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
             <div>
               <div class="step-badge">4</div>
-              <h4 class="font-bold text-xs sm:text-sm text-slate-900 mb-1">Pruebas TEST</h4>
-              <p class="text-[11px] text-slate-600 leading-tight">Despliegue y pruebas en ambiente TEST particular.</p>
+              <h4 class="font-bold text-sm sm:text-base text-slate-900 mb-1.5">Pruebas TEST</h4>
+              <p class="text-xs text-slate-600 leading-normal">Despliegue y pruebas en ambiente TEST particular.</p>
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
             <div>
               <div class="step-badge">5</div>
-              <h4 class="font-bold text-xs sm:text-sm text-slate-900 mb-1">Paso a UAT</h4>
-              <p class="text-[11px] text-slate-600 leading-tight">Actualización a UAT y homologación formal (Odoo).</p>
+              <h4 class="font-bold text-sm sm:text-base text-slate-900 mb-1.5">Paso a UAT</h4>
+              <p class="text-xs text-slate-600 leading-normal">Actualización a UAT y homologación formal (Odoo).</p>
             </div>
           </div>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col justify-between">
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
             <div>
               <div class="step-badge">6</div>
-              <h4 class="font-bold text-xs sm:text-sm text-slate-900 mb-1">Homologaci&oacute;n y Tag</h4>
-              <p class="text-[11px] text-slate-600 leading-tight">Crear Tag versionado en Master post-homologación.</p>
+              <h4 class="font-bold text-sm sm:text-base text-slate-900 mb-1.5">Homologaci&oacute;n y Tag</h4>
+              <p class="text-xs text-slate-600 leading-normal">Crear Tag versionado en Master post-homologación.</p>
             </div>
           </div>
         </div>
-        <div class="text-xs text-slate-400 border-t border-slate-100 pt-3 text-right font-medium">Pipeline de Entrega Continua</div>
-      </div>
 
-      <!-- SLIDE 6: REGLAS CLAVE DE CALIDAD -->
-      <div class="slide-item hidden bg-white text-slate-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200 slide-card" data-index="6">
-        <div class="border-b border-slate-100 pb-5">
+        <div class="text-xs text-slate-400 border-t border-slate-200/80 pt-3 text-right font-semibold">Pipeline de Entrega Continua</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: REGLAS CLAVE DE CALIDAD -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-slate-50 text-slate-900 p-6 sm:p-10 lg:p-14 flex flex-col justify-between" data-index="6">
+      <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+        <div class="border-b border-slate-200/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-2.5 h-8 bg-brand-500 rounded-full"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Reglas Clave de Calidad de C&oacute;digo</h2>
+            <div class="w-3 h-9 bg-brand-500 rounded-full"></div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Reglas Clave de Calidad de C&oacute;digo</h2>
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 py-6">
-          <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-6 my-auto">
+          <div class="p-8 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-4">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg">
+              <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
                 <i class="fa fa-database"></i>
               </div>
-              <h3 class="font-bold text-slate-900 text-base">Modelos y Archivos de Configuraci&oacute;n</h3>
+              <h3 class="font-bold text-slate-900 text-xl">Modelos y Archivos de Configuraci&oacute;n</h3>
             </div>
-            <ul class="text-xs sm:text-sm text-slate-600 space-y-3 pl-2">
+            <ul class="text-sm text-slate-600 space-y-4 pl-2">
               <li class="leading-relaxed"><strong class="text-slate-800">· Modelos:</strong> Incluir únicamente archivos necesarios (.edmx, .diagram, classes, Context). Recordar incluir .csproj al agregar nuevas clases o vistas.</li>
               <li class="leading-relaxed"><strong class="text-slate-800">· Configuraciones:</strong> No subir archivos de configuración (app.config / web.config) salvo que sea imprescindible y esté verificado.</li>
             </ul>
           </div>
-          <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-4">
+          <div class="p-8 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-4">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg">
+              <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
                 <i class="fa fa-code"></i>
               </div>
-              <h3 class="font-bold text-slate-900 text-base">Est&aacute;ndares de C&oacute;digo y Gesti&oacute;n Git</h3>
+              <h3 class="font-bold text-slate-900 text-xl">Est&aacute;ndares de C&oacute;digo y Gesti&oacute;n Git</h3>
             </div>
-            <ul class="text-xs sm:text-sm text-slate-600 space-y-3 pl-2">
+            <ul class="text-sm text-slate-600 space-y-4 pl-2">
               <li class="leading-relaxed"><strong class="text-slate-800">· Buenas Pr&aacute;cticas:</strong> Usar enums en C# y constantes equivalentes en JS. Utilizar Entity Framework o Stored Procedures; prohibido SQL embebido.</li>
               <li class="leading-relaxed"><strong class="text-slate-800">· Trazabilidad:</strong> Documentar comentarios en lógica de negocio. Ciclo de ramas F &rarr; R (al finalizar, sólo una rama F y R por ticket).</li>
             </ul>
           </div>
         </div>
-        <div class="text-xs text-slate-400 border-t border-slate-100 pt-3 text-right font-medium">Estándares de Ingeniería</div>
-      </div>
 
-      <!-- SLIDE 7: DIRECTIVAS STING NEXT -->
-      <div class="slide-item hidden bg-white text-slate-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200 slide-card" data-index="7">
-        <div class="border-b border-slate-100 pb-5">
+        <div class="text-xs text-slate-400 border-t border-slate-200/80 pt-3 text-right font-semibold">Estándares de Ingeniería</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: DIRECTIVAS STING NEXT -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-slate-50 text-slate-900 p-6 sm:p-10 lg:p-14 flex flex-col justify-between" data-index="7">
+      <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+        <div class="border-b border-slate-200/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-2.5 h-8 bg-brand-500 rounded-full"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Directivas STING Next (Ejemplo)</h2>
+            <div class="w-3 h-9 bg-brand-500 rounded-full"></div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Directivas STING Next (Ejemplo)</h2>
           </div>
           <p class="text-xs font-semibold text-brand-500 uppercase tracking-wider mt-2">ARCHIVO MD, son las directivas b&aacute;sicas para que un agente ejecute siempre con un prompt</p>
         </div>
-        <div class="py-5 space-y-3">
-          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-            <span class="w-2 h-2 rounded-full bg-brand-500 mt-2 shrink-0"></span>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Intocabilidad de APIs Legacy:</strong> Prohibido modificar o refactorizar endpoints existentes de STING clásico. Cero riesgo de regresión.</p>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-            <span class="w-2 h-2 rounded-full bg-brand-500 mt-2 shrink-0"></span>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Reutilizaci&oacute;n Eficiente:</strong> Reutilizar endpoints JSON existentes antes de crear nuevas estructuras.</p>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-            <span class="w-2 h-2 rounded-full bg-brand-500 mt-2 shrink-0"></span>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Nomenclatura Obligatoria:</strong> Todo nuevo endpoint o acción debe usar el sufijo NombreApi_Next (ej: <code>EliminarLotesMasivo_Next</code>).</p>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-            <span class="w-2 h-2 rounded-full bg-brand-500 mt-2 shrink-0"></span>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Notificaci&oacute;n expl&iacute;cita:</strong> Informar previamente en el chat antes de crear una nueva API paralela.</p>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-3">
-            <span class="w-2 h-2 rounded-full bg-brand-500 mt-2 shrink-0"></span>
-            <p class="text-xs sm:text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Optimizaci&oacute;n Entity Framework:</strong> Aplicar lecturas no rastreadas <code>AsNoTracking()</code> en las consultas.</p>
-          </div>
-        </div>
-        <div class="text-xs text-slate-400 border-t border-slate-100 pt-3 text-right font-medium">Contrato de Directivas de Agentes</div>
-      </div>
 
-      <!-- SLIDE 8: IMPLEMENTACIÓN DE IA Y AGENTES -->
-      <div class="slide-item hidden bg-white text-slate-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200 slide-card" data-index="8">
-        <div class="border-b border-slate-100 pb-5">
-          <div class="flex items-center gap-3">
-            <div class="w-2.5 h-8 bg-brand-500 rounded-full"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Implementaci&oacute;n de IA y Agentes</h2>
+        <div class="py-6 space-y-3.5 my-auto">
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 mt-2 shrink-0"></span>
+            <p class="text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Intocabilidad de APIs Legacy:</strong> Prohibido modificar o refactorizar endpoints existentes de STING clásico. Cero riesgo de regresión.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 mt-2 shrink-0"></span>
+            <p class="text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Reutilizaci&oacute;n Eficiente:</strong> Reutilizar endpoints JSON existentes antes de crear nuevas estructuras.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 mt-2 shrink-0"></span>
+            <p class="text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Nomenclatura Obligatoria:</strong> Todo nuevo endpoint o acción debe usar el sufijo NombreApi_Next (ej: <code>EliminarLotesMasivo_Next</code>).</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 mt-2 shrink-0"></span>
+            <p class="text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Notificaci&oacute;n expl&iacute;cita:</strong> Informar previamente en el chat antes de crear una nueva API paralela.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 mt-2 shrink-0"></span>
+            <p class="text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">Optimizaci&oacute;n Entity Framework:</strong> Aplicar lecturas no rastreadas <code>AsNoTracking()</code> en las consultas.</p>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 py-6">
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-3 text-lg">
+
+        <div class="text-xs text-slate-400 border-t border-slate-200/80 pt-3 text-right font-semibold">Contrato de Directivas de Agentes</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: IMPLEMENTACIÓN DE IA Y AGENTES -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-slate-50 text-slate-900 p-6 sm:p-10 lg:p-14 flex flex-col justify-between" data-index="8">
+      <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+        <div class="border-b border-slate-200/80 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-3 h-9 bg-brand-500 rounded-full"></div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Implementaci&oacute;n de IA y Agentes</h2>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-6 my-auto">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-4 text-xl">
               <i class="fa fa-file-text-o"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-2">User Stories & Casos</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Prompts estructurados y agrupados para generar e hiper-detallar historias de usuario y casos de uso de forma consistente.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-2">User Stories & Casos</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Prompts estructurados y agrupados para generar e hiper-detallar historias de usuario y casos de uso de forma consistente.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-3 text-lg">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4 text-xl">
               <i class="fa fa-desktop"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-2">Doc. de Pantallas</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Asistencia de Agentes IA en la documentación técnica y funcional automática de pantallas desarrolladas.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-2">Doc. de Pantallas</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Asistencia de Agentes IA en la documentación técnica y funcional automática de pantallas desarrolladas.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3 text-lg">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 text-xl">
               <i class="fa fa-check-square-o"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-2">Pruebas Automatizadas</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Apoyo continuo en la generación, ejecución y mantenimiento de tests automatizados para asegurar cobertura.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-2">Pruebas Automatizadas</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Apoyo continuo en la generación, ejecución y mantenimiento de tests automatizados para asegurar cobertura.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-3 text-lg">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4 text-xl">
               <i class="fa fa-pie-chart"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-2">Gesti&oacute;n y An&aacute;lisis</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Análisis de requerimientos acelerado: agrupación, estructuración y priorización inteligente con Agentes.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-2">Gesti&oacute;n y An&aacute;lisis</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Análisis de requerimientos acelerado: agrupación, estructuración y priorización inteligente con Agentes.</p>
           </div>
         </div>
-        <div class="text-xs text-slate-400 border-t border-slate-100 pt-3 text-right font-medium">Asistencia Inteligente de Desarrollo</div>
-      </div>
 
-      <!-- SLIDE 9: IMPACTO Y BENEFICIOS DE LA IA -->
-      <div class="slide-item hidden bg-white text-slate-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200 slide-card" data-index="9">
-        <div class="border-b border-slate-100 pb-5">
+        <div class="text-xs text-slate-400 border-t border-slate-200/80 pt-3 text-right font-semibold">Asistencia Inteligente de Desarrollo</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: IMPACTO Y BENEFICIOS DE LA IA -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-slate-50 text-slate-900 p-6 sm:p-10 lg:p-14 flex flex-col justify-between" data-index="9">
+      <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col justify-between">
+        <div class="border-b border-slate-200/80 pb-4">
           <div class="flex items-center gap-3">
-            <div class="w-2.5 h-8 bg-brand-500 rounded-full"></div>
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Impacto y Beneficios de la IA</h2>
+            <div class="w-3 h-9 bg-brand-500 rounded-full"></div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Impacto y Beneficios de la IA</h2>
           </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 py-6">
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-3 text-lg font-bold">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-6 my-auto">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-bolt"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">Reducci&oacute;n de Tiempos</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Sustancial ahorro de horas hombre en documentación manual, tareas repetitivas y relevamiento inicial.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">Reducci&oacute;n de Tiempos</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Sustancial ahorro de horas hombre en documentación manual, tareas repetitivas y relevamiento inicial.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-thumbs-up"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">Mejora de Calidad</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Estándares homogéneos y consistentes en la redacción de User Stories, Casos de Uso y código fuente.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">Mejora de Calidad</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Estándares homogéneos y consistentes en la redacción de User Stories, Casos de Uso y código fuente.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-shield"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">Pruebas M&aacute;s Robustas</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Mayor cobertura de casos de prueba y detección temprana de defectos antes de llegar a UAT.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">Pruebas M&aacute;s Robustas</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Mayor cobertura de casos de prueba y detección temprana de defectos antes de llegar a UAT.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-tachometer"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">An&aacute;lisis Eficiente</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Prompts estructurados que aceleran el entendimiento funcional y la estimación de esfuerzo.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">An&aacute;lisis Eficiente</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Prompts estructurados que aceleran el entendimiento funcional y la estimación de esfuerzo.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-file-code-o"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">Documentaci&oacute;n &Aacute;gil</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Mantenimiento actualizado e instantáneo de las pantallas y flujos del sistema con IA.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">Documentaci&oacute;n &Aacute;gil</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Mantenimiento actualizado e instantáneo de las pantallas y flujos del sistema con IA.</p>
           </div>
-          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:shadow-md transition">
-            <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-3 text-lg font-bold">
+          <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition">
+            <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-4 text-xl font-bold">
               <i class="fa fa-check-circle"></i>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1">Alineaci&oacute;n Total a ISO</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">Procesos altamente trazables, repetibles y auditables sin restar agilidad al equipo.</p>
+            <h3 class="font-bold text-slate-900 text-lg mb-1.5">Alineaci&oacute;n Total a ISO</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Procesos altamente trazables, repetibles y auditables sin restar agilidad al equipo.</p>
           </div>
         </div>
-        <div class="text-xs text-slate-400 border-t border-slate-100 pt-3 text-right font-medium">Métricas & Valor de Negocio</div>
-      </div>
 
-      <!-- SLIDE 10: CIERRE -->
-      <div class="slide-item hidden bg-gradient-to-br from-slate-900 via-brand-900 to-slate-950 text-white rounded-3xl p-8 sm:p-14 shadow-2xl border border-slate-700/60 slide-card text-center items-center justify-center space-y-8" data-index="10">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs sm:text-sm font-bold uppercase tracking-widest shadow-inner">
+        <div class="text-xs text-slate-400 border-t border-slate-200/80 pt-3 text-right font-semibold">Métricas & Valor de Negocio</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: CIERRE -->
+    <div class="slide-item hidden w-full h-full min-h-[calc(100vh-3.5rem)] flex-1 bg-gradient-to-br from-[#070b14] via-[#0e1a2d] to-[#09111e] text-white p-6 sm:p-12 lg:p-16 flex flex-col justify-between items-center text-center" data-index="10">
+      <div class="pt-4">
+        <div class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs sm:text-sm font-bold uppercase tracking-widest shadow-inner">
           <i class="fa fa-check-circle text-sm"></i> Integraci&oacute;n Exitosa
         </div>
-        <div class="space-y-4 max-w-3xl">
-          <h2 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Scrum + ISO 9001 + IA
-          </h2>
-          <p class="text-base sm:text-2xl text-slate-200 font-medium">
-            Una forma de trabajar ordenada, de alta calidad y orientada a la mejora continua.
-          </p>
-        </div>
-        <div class="pt-6 border-t border-slate-700/60 w-full flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm text-slate-400">
-          <span>Dicsys · Equipo de Desarrollo</span>
-          <a href="/" class="mt-2 sm:mt-0 font-bold text-sky-300 hover:text-white transition">
-            Volver a la Pantalla Principal &rarr;
-          </a>
-        </div>
       </div>
 
+      <div class="space-y-6 max-w-4xl py-8">
+        <h2 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight">
+          Scrum + ISO 9001 + IA
+        </h2>
+        <p class="text-xl sm:text-3xl text-slate-200 font-medium max-w-3xl mx-auto leading-relaxed">
+          Una forma de trabajar ordenada, de alta calidad y orientada a la mejora continua.
+        </p>
+      </div>
+
+      <div class="pb-4 border-t border-slate-800/80 w-full max-w-5xl flex flex-col sm:flex-row items-center justify-between text-sm text-slate-400">
+        <span>Dicsys · Equipo de Desarrollo</span>
+        <a href="/" class="mt-2 sm:mt-0 font-bold text-sky-300 hover:text-white transition">
+          Volver a la Pantalla Principal &rarr;
+        </a>
+      </div>
     </div>
+
   </main>
 
   <script>
@@ -539,11 +569,25 @@
     document.getElementById('btnPrev').addEventListener('click', () => showSlide(currentSlide - 1));
     document.getElementById('btnNext').addEventListener('click', () => showSlide(currentSlide + 1));
 
+    document.getElementById('btnFullscreen').addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
         showSlide(currentSlide + 1);
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
         showSlide(currentSlide - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
       }
     });
 
